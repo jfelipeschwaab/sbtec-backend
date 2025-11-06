@@ -1,0 +1,93 @@
+{
+  "dadosLogin": {
+    "docente": {
+      "id": 1,
+      "nome": "Prof. Carlos Antunes",
+      "identificador_sigrh": "123456"
+    },
+    "unidadeEnsino": {
+      "id": 1,
+      "nome": "Escola Estadual Central"
+    },
+    "periodoLetivo": {
+      "id": 1,
+      "descricao": "2025 - 1º Semestre",
+      "ano": 2025,
+      "semestre": 1
+    }
+  },
+  "respostaAlocacoes": [
+    {
+      "id_alocacao": 101,
+      "turma": {
+        "id": 1,
+        "nome": "3º Ano A - Matutino",
+        "ano_escolar": 3
+      },
+      "disciplina": {
+        "id": 1,
+        "nome": "Matemática"
+      }
+    },
+    {
+      "id_alocacao": 102,
+      "turma": {
+        "id": 1,
+        "nome": "3º Ano A - Matutino",
+        "ano_escolar": 3
+      },
+      "disciplina": {
+        "id": 2,
+        "nome": "Física"
+      }
+    },
+    {
+      "id_alocacao": 103,
+      "turma": {
+        "id": 2,
+        "nome": "2º Ano B - Matutino",
+        "ano_escolar": 2
+      },
+      "disciplina": {
+        "id": 1,
+        "nome": "Matemática"
+      }
+    },
+    {
+      "id_alocacao": 104,
+      "turma": {
+        "id": 3,
+        "nome": "1º Ano C - Vespertino",
+        "ano_escolar": 1
+      },
+      "disciplina": {
+        "id": 3,
+        "nome": "História"
+      }
+    }
+  ],
+  "respostaAlunosPorAlocacao": {
+    "101": [
+      { "id_aluno": 1, "nome": "Ana Beatriz Silva", "matricula": "2023001" },
+      { "id_aluno": 2, "nome": "Bruno Costa", "matricula": "2023002" },
+      { "id_aluno": 3, "nome": "Carla Dias", "matricula": "2023003" },
+      { "id_aluno": 4, "nome": "Daniel Moreira", "matricula": "2023004" }
+    ],
+    "102": [
+      { "id_aluno": 1, "nome": "Ana Beatriz Silva", "matricula": "2023001" },
+      { "id_aluno": 2, "nome": "Bruno Costa", "matricula": "2023002" },
+      { "id_aluno": 3, "nome": "Carla Dias", "matricula": "2023003" },
+      { "id_aluno": 4, "nome": "Daniel Moreira", "matricula": "2023004" }
+    ],
+    "103": [
+      { "id_aluno": 5, "nome": "Elisa Fernandes", "matricula": "2024001" },
+      { "id_aluno": 6, "nome": "Fábio Guedes", "matricula": "2024002" },
+      { "id_aluno": 7, "nome": "Gabriela Lima", "matricula": "2024003" }
+    ],
+    "104": [
+      { "id_aluno": 8, "nome": "Hugo Martins", "matricula": "2025001" },
+      { "id_aluno": 9, "nome": "Isabela Rocha", "matricula": "2025002" },
+      { "id_aluno": 10, "nome": "João Nunes", "matricula": "2025003" }
+    ]
+  }
+}
