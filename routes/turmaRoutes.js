@@ -1,22 +1,18 @@
 import express from "express";
-// Importa os nomes corretos exportados pelo controller
 import {
   listarTurmasDoProfessor,
   listarAlunosPorAlocacao,
-  dadosUsuarioLogado
+  dadosUsuarioLogado,
+  registrarPresenca // <--- IMPORTANTE: Importe a nova função
 } from "../controllers/turmaController.js";
 
 const router = express.Router();
 
-// GET /turmas
-// Agora chama a função correta: listarTurmasDoProfessor
 router.get("/", listarTurmasDoProfessor);
-
-// GET /turmas/:id/alunos
-// Agora chama a função correta: listarAlunosPorAlocacao
 router.get("/:id/alunos", listarAlunosPorAlocacao);
-
-// Rota para buscar os dados do usuário/login (sugestão)
 router.get("/usuario-logado", dadosUsuarioLogado);
+
+// NOVA ROTA POST PARA SALVAR
+router.post("/registrar-presenca", registrarPresenca);
 
 export default router;

@@ -1,20 +1,26 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
+
 
 // --- Carregamento do Mock ---
 // Assume que 'mock_dados_app.json' está no mesmo diretório
 // Se não estiver, ajuste o caminho.
 let data;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const mockPath = path.join(__dirname, 'mock_dados_app.json');
 try {
-  const __dirname = path.dirname(new URL(import.meta.url).pathname.substring(1)); // Ajuste para ES Modules
-  const mockPath = path.join(process.cwd(), 'controllers', 'mock_dados_app.json');
-  const jsonData = fs.readFileSync(mockPath, "utf-8");
-  data = JSON.parse(jsonData);
+  if (fs.existsSync(mockPath)) {
+    const jsonData = fs.readFileSync(mockPath, "utf-8");
+    data = JSON.parse(jsonData);
+  } else {
+    console.warn("⚠️ Arquivo mock não encontrado, criando estrutura vazia.");
+    data = { respostaAlocacoes: [], respostaAlunosPorAlocacao: {}, registrosPresenca: [], dadosLogin: {} };
+  }
 } catch (error) {
   console.error("❌ ERRO FATAL: Não foi possível ler o arquivo mock_dados_app.json.", error);
-  // Em um app real, você não iniciaria o servidor se o mock falhar.
-  // Para este exemplo, apenas definimos data como vazio.
-  data = { respostaAlocacoes: [], respostaAlunosPorAlocacao: {} };
+  data = { respostaAlocacoes: [], respostaAlunosPorAlocacao: {}, registrosPresenca: [], dadosLogin: {} };
 }
 
 
@@ -127,5 +133,68 @@ export function dadosUsuarioLogado(req, res) {
   } catch (error) {
     console.error("❌ Erro ao buscar dados de login:", error);
     res.status(500).json({ message: "Erro ao processar sua solicitação." });
+  }
+}
+
+export function registrarPresenca(req, res) {
+  try {
+    const { id_alocacao, data: dataAula, etapa, presencas } = req.body;
+
+    // 1. Validação simples
+    if (!id_alocacao || !presencas) {
+      return res.status(400).json({ message: "Dados incompletos." });
+    }
+
+    // 2. Adicionar ao objeto em memória
+    const novoRegistro = {
+      id: Date.now(), // ID único simples
+      id_alocacao,
+      data_aula: dataAula,
+      etapa,
+      registros: presencas // array [{id_aluno, presente}]
+    };
+
+    if (!data.registrosPresenca) data.registrosPresenca = [];
+    data.registrosPresenca.push(novoRegistro);
+
+    // 3. SALVAR NO ARQUIVO FÍSICO (Persistência)
+    fs.writeFileSync(mockPath, JSON.stringify(data, null, 2));
+
+    // =====================================================
+    // LOGS DE TESTE NO CONSOLE DO BACKEND
+    // =====================================================
+    console.log("\n===========================================");
+    console.log(`📝 REGISTRO DE CHAMADA RECEBIDO`);
+    console.log(`📅 Data: ${dataAula} | Etapa: ${etapa}`);
+    console.log(`🏫 ID Alocação: ${id_alocacao}`);
+    console.log("-------------------------------------------");
+    
+    // Recupera lista de alunos original para pegar os nomes
+    const alunosTurma = data.respostaAlunosPorAlocacao[id_alocacao] || [];
+
+    let totalPresentes = 0;
+    let totalFaltas = 0;
+
+    presencas.forEach(registro => {
+        const alunoInfo = alunosTurma.find(a => a.id_aluno === registro.id_aluno);
+        const nomeAluno = alunoInfo ? alunoInfo.nome : `Aluno ID ${registro.id_aluno}`;
+        const status = registro.presente ? "✅ PRESENTE" : "❌ FALTA";
+        
+        if (registro.presente) totalPresentes++; else totalFaltas++;
+
+        // O PRINT QUE VOCÊ PEDIU:
+        console.log(`${status} - ${nomeAluno}`);
+    });
+
+    console.log("-------------------------------------------");
+    console.log(`Resumo: ${totalPresentes} Presentes, ${totalFaltas} Faltas.`);
+    console.log("===========================================\n");
+    // =====================================================
+
+    res.status(201).json({ message: "Presença registrada com sucesso!", id_registro: novoRegistro.id });
+
+  } catch (error) {
+    console.error("Erro ao salvar presença:", error);
+    res.status(500).json({ message: "Erro interno ao salvar." });
   }
 }
